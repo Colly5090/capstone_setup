@@ -48,8 +48,8 @@ export const useFetchExchangeRate = () => {
         throw new Error("Both currencies must be selected to fetch the exchange rate.");
       }
 
-      const apikey = process.env.EXCHANGE_API_KEY
-      const apiUrl = `https://v6.exchangerate-api.com/v6/${apikey}/pair/${fromCurrency}/${toCurrency}`;
+      const apiKey = import.meta.env.VITE_EXCHANGE_API_KEY;
+      const apiUrl = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/${fromCurrency}/${toCurrency}`;
       console.log("Fetching exchange rate from API...");
       const response = await fetch(apiUrl);
       const data = await response.json();
