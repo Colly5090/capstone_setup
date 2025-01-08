@@ -30,7 +30,8 @@ const useAlertStore = create((set, get) => ({
     if (!fromCurrency || !toCurrency) return;
 
     try {
-      const apiUrl = `https://v6.exchangerate-api.com/v6/2c4c848d8b7dd06b234c74c1/pair/${fromCurrency}/${toCurrency}`;
+      const apiKey = import.meta.env.VITE_EXCHANGE_API_KEY;
+      const apiUrl = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/${fromCurrency}/${toCurrency}`;
       const response = await fetch(apiUrl);
       const data = await response.json();
 

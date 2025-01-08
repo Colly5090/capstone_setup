@@ -3,7 +3,8 @@ import { useQuery, useQueries } from 'react-query';
 
 // Function to fetch exchange rates
 const fetchExchangeRate = async ({ fromCurrency, toCurrency }) => {
-  const url = `https://v6.exchangerate-api.com/v6/2c4c848d8b7dd06b234c74c1/pair/${fromCurrency}/${toCurrency}`;
+  const apiKey = import.meta.env.VITE_EXCHANGE_API_KEY;
+  const url = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/${fromCurrency}/${toCurrency}`;
   const response = await fetch(url);
   const data = await response.json();
   if (!response.ok) {
