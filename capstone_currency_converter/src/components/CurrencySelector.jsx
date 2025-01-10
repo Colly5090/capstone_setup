@@ -7,52 +7,71 @@ import useApiStore, { useFetchExchangeRate } from "../stores/apiStore";
 import SetAlert from "./SetAlert";
 import useScroll from "../stores/useScroll";
 import MultiConvert from "./MultiConvert";
-import currencyOptions from "../data/currencyOptions";
+import currencyList from "../data/currencyList";
 import Rating from "./Rating";
 import popularCurrencies from "../data/popularCurrencies";
 
 const CurrencySelection = () => {
-  const {
-    fromCurrency,
-    toCurrency,
-    setFromCurrency,
-    setToCurrency,
-    //exchangeRate,
-  } = useApiStore();
-
-  //const { data, isLoading, error } = useFetchExchangeRate();
+  const { fromCurrency, toCurrency, setFromCurrency, setToCurrency } = useApiStore();
   const { data: exchangeRate, isLoading, error } = useFetchExchangeRate();
-  console.log('selection code exchange rate', exchangeRate)
 
-  //const newExchangeRate = exchangeRate?.[fromCurrency]?.[toCurrency] ?? 'Not Available';
-  //console.log('This is my new exchange rate', newExchangeRate)
-  console.log('Exchange Rate Data Structure:', exchangeRate)
-  console.log('From Currency:', fromCurrency);
-  console.log('To Currency:', toCurrency);
-  //console.log('New Exchange Rate:', newExchangeRate);
-  if (!fromCurrency || !toCurrency) {
-    console.error('Missing currencies:', { fromCurrency, toCurrency });
-  }
-  
-
-  //const [amount, setAmount] = useState("");
+ // Local state for managing favorites, recent selections, and conversions
   const [favorites, setFavorites] = useState([]);
   const [recents, setRecents] = useState([]);
-  //const [convertedAmount, setConvertedAmount] = useState(""); // This state will track the converted amount
-  const [conversions, setConversions] = useState([]); // Store conversion results for specific values
+  const [conversions, setConversions] = useState([]);
+
+  // References for scrolling functionality
   const bellRef = useRef(null);
   const multiRef = useRef(null);
   const setRef = useScroll((state) => state.setRef);
 
-  const specificValues = [1, 5, 10, 25, 50, 100, 500, 1000]; // Specific values to convert
+  // Auto convert selected currencies with specific amounts
+  const specificAmounts = [1, 5, 10, 25, 50, 100, 500, 1000];
 
+  // Initialize scroll references
   useEffect(() => {
     setRef("bell", bellRef);
     setRef("multi", multiRef);
   }, [setRef]);
 
-  // Map currency options to the required format
-  const allOptions = currencyOptions.map((currency) => ({
+  // Load favorites from local storage
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem("favorites"));
+    if (storedFavorites) {
+      setFavorites(storedFavorites);
+    }
+  }, []);  
+  
+   // Load recent selections from session storage
+  useEffect(() => {
+    const storedRecents = JSON.parse(sessionStorage.getItem("recents"));
+    if (storedRecents) {
+      setRecents(storedRecents);
+    }
+  }, []);
+
+  // Fetch exchange rate if required or error states
+  useEffect(() => {
+  if (fromCurrency && toCurrency) {
+    if (!exchangeRate || !exchangeRate[fromCurrency] || !exchangeRate[toCurrency]) {
+      if (isLoading) {
+        //Loading while fetching the exchangerate
+      } else if (error) {
+        //If not an error occurs
+      }
+    }
+  }
+}, [fromCurrency, toCurrency, exchangeRate, isLoading, error]);
+
+ // Calculate conversions when the exchange rate changes
+ useEffect(() => {
+  if (exchangeRate) {
+    calculateConversions(exchangeRate);
+  }
+}, [exchangeRate]);
+
+  // Map currency data to a format usable by react-select
+  const allCurrencies = currencyList.map((currency) => ({
     value: currency.code,
     label: (
       <div className="flex items-center justify-between">
@@ -63,8 +82,7 @@ const CurrencySelection = () => {
         <FaStar
           className={`ml-4 cursor-pointer ${
             favorites.includes(currency.code)
-              ? "text-yellow-400"
-              : "text-gray-400"
+              ? "text-yellow-400" : "text-gray-400"
           }`}
           onClick={(e) => toggleFavorite(currency.code, e)}
         />
@@ -73,28 +91,29 @@ const CurrencySelection = () => {
     countryCode: currency.countryCode,
   }));
 
-  const getGroupedOptions = (excludeCurrency) => {
+  // Group currencies into categories like favorites, recents
+  const groupCurrencies = (excludeCurrency) => {
     const groupedOptions = [];
 
-    // Favorites section
+    // Add selected favorites section
     const favoriteOptions = favorites
       .filter((code) => code !== excludeCurrency)
-      .map((code) => allOptions.find((option) => option.value === code));
+      .map((code) => allCurrencies.find((option) => option.value === code));
 
     if (favoriteOptions.length > 0) {
       groupedOptions.push({ label: "Favorites", options: favoriteOptions });
     }
 
-    // Recents section
+    // Add recents section
     const recentOptions = recents
       .filter((code) => code !== excludeCurrency)
-      .map((code) => allOptions.find((option) => option.value === code));
+      .map((code) => allCurrencies.find((option) => option.value === code));
 
     if (recentOptions.length > 0) {
       groupedOptions.push({ label: "Recents", options: recentOptions });
     }
 
-    // Popular section with star for adding to favorites
+    // Add Popular currencies section with star for adding to favorites
     const popularOptions = popularCurrencies
       .filter((currency) => currency.code !== excludeCurrency)
       .map((currency) => ({
@@ -121,59 +140,27 @@ const CurrencySelection = () => {
       groupedOptions.push({ label: "Popular", options: popularOptions });
     }
 
-    // All options section
+    //Add All currencies section
     groupedOptions.push({
       label: "All",
-      options: allOptions.filter((option) => option.value !== excludeCurrency),
+      options: allCurrencies.filter((option) => option.value !== excludeCurrency),
     });
 
     return groupedOptions;
   };
 
+  // Toggle favorite currencies and update local storage
   const toggleFavorite = (code, e) => {
     e.stopPropagation();
     setFavorites((prev) => {
       const updatedFavorites = prev.includes(code)
-        ? prev.filter((fav) => fav !== code)
-        : [...prev, code];
+        ? prev.filter((fav) => fav !== code) : [...prev, code];
       localStorage.setItem("favorites", JSON.stringify(updatedFavorites)); // Save to localStorage
       return updatedFavorites;
     });
   };
 
-  useEffect(() => {
-    const storedFavorites = JSON.parse(localStorage.getItem("favorites"));
-    if (storedFavorites) {
-      setFavorites(storedFavorites);
-    }
-  }, []);  
-  
-  useEffect(() => {
-    const storedRecents = JSON.parse(sessionStorage.getItem("recents"));
-    if (storedRecents) {
-      setRecents(storedRecents);
-    }
-  }, []);
-
-  useEffect(() => {
-  if (fromCurrency && toCurrency) {
-    // If the exchange rate data is not available in the cache
-    if (!exchangeRate || !exchangeRate[fromCurrency] || !exchangeRate[toCurrency]) {
-      if (isLoading) {
-        // Optionally, handle the loading state (e.g., show a loading spinner)
-        console.log("Loading exchange rate...");
-      } else if (error) {
-        // Optionally, handle the error state (e.g., show an error message)
-        console.error("Error fetching exchange rate:", error);
-      }
-    } else {
-      // Data is available in the cache, use it
-      console.log("Exchange rate data found in cache");
-    }
-  }
-}, [fromCurrency, toCurrency, exchangeRate, isLoading, error]);
-
-
+  // Handle currency selection and update state
   const handleCurrencyChange = (selectedOption, type) => {
     const selectedCurrency = selectedOption ? selectedOption.value : null;
 
@@ -187,21 +174,20 @@ const CurrencySelection = () => {
     if (selectedCurrency && !recents.includes(selectedCurrency)) {
       const updatedRecents = [selectedCurrency, ...recents].slice(0, 5);
       setRecents(updatedRecents);
-      sessionStorage.setItem("recents", JSON.stringify(updatedRecents)); // Save to sessionStorage
+      sessionStorage.setItem("recents", JSON.stringify(updatedRecents));
     }
 
     // Trigger exchange rate fetching only when a currency is selected
     if (selectedCurrency && !exchangeRate?.[fromCurrency]?.[toCurrency]) {
       // Fetch exchange rate (this happens in the useEffect)
-      console.log("Fetching exchange rate for", fromCurrency, "to", toCurrency);
     }
   };
 
-  // Function to calculate conversions for the specific values
+  // Calculate conversions for predefined amounts
   const calculateConversions = (rate) => {
     const newConversions = [];
     if (rate) {
-      specificValues.forEach((value) => {
+      specificAmounts.forEach((value) => {
         newConversions.push({
           number: value,
           converted: (value * rate).toFixed(2),
@@ -211,13 +197,7 @@ const CurrencySelection = () => {
     setConversions(newConversions);
   };
 
-  // Call calculateConversions whenever the exchangeRate changes
-  useEffect(() => {
-    if (exchangeRate) {
-      calculateConversions(exchangeRate);
-    }
-  }, [exchangeRate]);
-
+  // Custom placeholder for react-select
   const CustomPlaceholder = (props) => {
     const { selectProps } = props;
     const isFromCurrency = selectProps.name === "fromCurrency";
@@ -239,39 +219,35 @@ const CurrencySelection = () => {
     );
   };
 
+  // Swap selected currencies
   const handleSwap = () => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
-    //setConvertedAmount(""); // Reset the converted amount when currencies are swapped
-    // Fetch new exchange rate after swap
     if (exchangeRate) {
-      console.log("Exchange rate found in cache:", exchangeRate);
-      return exchangeRate; //hold the exchangerate for the later 
-    }
-    else {
-      console.log("Exchange rate not in cache, fetching new rate...");
+      return exchangeRate;
     }
   };
 
+   // Render the component and other components
   return (
     <div className="space-y-8">
       {/* Currency, Amount, Swap, and Converted Amount Container */}
       <div className="flex flex-col md:flex-col gap-4 items-stretch p-4 sm:w-full">
-        {/* From Currency Dropdown */}
+
+        {/* DropDown for From Currency */}
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             From Currency
           </label>
           <Select
             name="fromCurrency"
-            options={getGroupedOptions(toCurrency)}
+            options={groupCurrencies(toCurrency)}
             onChange={(option) => handleCurrencyChange(option, "from")}
             placeholder="Select From Currency"
             components={{ Placeholder: CustomPlaceholder }}
             value={
               fromCurrency
-                ? allOptions.find((option) => option.value === fromCurrency)
-                : null
+                ? allCurrencies.find((option) => option.value === fromCurrency) : null
             }
             isClearable
           />
@@ -285,13 +261,14 @@ const CurrencySelection = () => {
         {/* Swap Button */}
         <div className="flex flex-col items-center md:items-star">
           <button
+            aria-label="Swap currencies"
             onClick={handleSwap}
             className="bg-green-300 p-4 rounded-full hover:bg-pink-300 mb-2 mt-5 sm:bg-gray-200"
           >
             <span className="font-semibold md:font-semibold text-sm md:text-xl md:text-green-500 text-black">Swap</span> ↔️
           </button>
 
-          {/* Display Current Exchange Rate */}
+          {/* Display Current Exchange Rate with datetime */}
           {fromCurrency && toCurrency && exchangeRate !== null && (
             <div className="text-center md:text-left text-gray-700 mt-2 p-4">
               <div className="text-gray-700 md:text-gray-900 text-sm md:text-lg font-medium md:font-semibold">
@@ -316,11 +293,11 @@ const CurrencySelection = () => {
           </label>
           <Select
             name="toCurrency"
-            options={getGroupedOptions(fromCurrency)}
+            options={groupCurrencies(fromCurrency)}
             onChange={(option) => handleCurrencyChange(option, "to")}
             placeholder="Select To Currency"
             components={{ Placeholder: CustomPlaceholder }}
-            value={allOptions.find((option) => option.value === toCurrency)}
+            value={allCurrencies.find((option) => option.value === toCurrency)}
             isClearable
           />
         </div>
@@ -332,15 +309,17 @@ const CurrencySelection = () => {
       </div>
       {/* Horizontal Line */}
       <div className="border-t border-black w-full mb-10"></div>
+
       {/* Display conversion results for specific values */}
       {fromCurrency && toCurrency && exchangeRate > 0 && (
         <div className="flex flex-col md:flex-row justify-center items-center gap-10 p-2">
+
           {/* Card 1: Conversion of fromCurrency to toCurrency */}
           <div className="bg-gray-400 shadow-md rounded-lg w-96 min-h-[20rem] p-6 py-6 md:bg-green-200">
             <h3 className="text-sm md:text-lg font-medium md:font-semibold mb-4 text-center">
               Conversion of{" "}
-              {currencyOptions.find((opt) => opt.code === fromCurrency)?.name}{" "}
-              to {currencyOptions.find((opt) => opt.code === toCurrency)?.name}
+              {currencyList.find((opt) => opt.code === fromCurrency)?.name}{" "}
+              to {currencyList.find((opt) => opt.code === toCurrency)?.name}
             </h3>
             <ul className="space-y-2">
               {conversions.map(({ number, converted }) => (
@@ -363,11 +342,11 @@ const CurrencySelection = () => {
           <div className="bg-gray-400 shadow-md rounded-lg w-96 min-h-[20rem] p-6 py-6 md:bg-green-200">
             <h3 className="text-sm md:text-lg font-medium md:font-semibold mb-4 text-center">
               Conversion of{" "}
-              {currencyOptions.find((opt) => opt.code === toCurrency)?.name} to{" "}
-              {currencyOptions.find((opt) => opt.code === fromCurrency)?.name}
+              {currencyList.find((opt) => opt.code === toCurrency)?.name} to{" "}
+              {currencyList.find((opt) => opt.code === fromCurrency)?.name}
             </h3>
             <ul className="space-y-2">
-              {specificValues.map((value) => {
+              {specificAmounts.map((value) => {
                 const reverseConverted = (value / exchangeRate).toFixed(2);
                 return (
                   <li
@@ -395,8 +374,10 @@ const CurrencySelection = () => {
           <SetAlert />
         </div>
       </div>
+
         {/* Horizontal Line */}
         <div className="border-t border-black w-full mb-10"></div>
+
       {/*MultiCurrency Rendering */}
       <div className="pt-20 pb-10 px-6">
         <div

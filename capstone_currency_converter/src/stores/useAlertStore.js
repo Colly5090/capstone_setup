@@ -8,16 +8,16 @@ const useAlertStore = create((set, get) => ({
   },
   alertCount: 0,
   exchangeRate: null,
-  previousRate: null, // Store the previous rate
-  currentRate: null, // Store the current rate
-  alertMessage: '', // Store the alert message for the popup
+  previousRate: null, 
+  currentRate: null, 
+  alertMessage: '',
 
   setAlertSettings: (fromCurrency, toCurrency, isAgreed) => set({
     alertSettings: { fromCurrency, toCurrency, isAgreed },
     alertCount: 0,
     currentRate: null,
     previousRate: null,
-    alertMessage: '', // Reset the alert message when settings change
+    alertMessage: '',
   }),
 
   incrementAlertCount: () => set((state) => ({ alertCount: state.alertCount + 1 })),
@@ -50,10 +50,10 @@ const useAlertStore = create((set, get) => ({
           set({ currentRate: fetchedRate });
         }
       } else {
-        console.error('Error fetching exchange rate:', data.error_type || 'Unknown error');
+        //error type occured during exchangerate fetching
       }
     } catch (error) {
-      console.error('Error fetching exchange rate:', error);
+      //error message here
     }
   },
 

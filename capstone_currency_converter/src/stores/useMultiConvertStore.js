@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { useQuery, useQueries } from 'react-query';
+import { useQueries } from 'react-query';
 
 // Function to fetch exchange rates
 const fetchExchangeRate = async ({ fromCurrency, toCurrency }) => {
@@ -10,7 +10,6 @@ const fetchExchangeRate = async ({ fromCurrency, toCurrency }) => {
   if (!response.ok) {
     throw new Error(data.error || 'Failed to fetch exchange rate');
   }
-  console.log(`[LOG] Fetching rate: ${fromCurrency} -> ${toCurrency}, Rate: ${data.conversion_rate}`);
   return data.conversion_rate;
 };
 
@@ -21,18 +20,17 @@ export const useCurrencyRates = () => {
   const queries = (toCurrencies || []).map((toCurrency) => ({
     queryKey: ['exchangeRate', fromCurrency, toCurrency],
     queryFn: () => fetchExchangeRate({ fromCurrency, toCurrency }),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
     enabled: !!fromCurrency && !!toCurrency,
   }));
 
-  const results = useQueries(queries);  // Directly pass the array 'queries'
+  const results = useQueries(queries);
 
-  // Log details about queries
-  console.log('[LOG] Query Keys:', queries.map((q) => q.queryKey));
+  
   results.forEach((result, index) => {
     if (result.isFetched) {
-      console.log(`[LOG] Cached Rate for ${fromCurrency} -> ${toCurrencies[index]}:`, result.data);
+      //on successful fetch its cached
     }
   });
 

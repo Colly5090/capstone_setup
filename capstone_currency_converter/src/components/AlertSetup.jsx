@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
-import Select from 'react-select'; // Import react-select
+import Select from 'react-select';
 import useAlertStore from '../stores/useAlertStore';
-import currencyOptions from "../data/currencyOptions";
+import currencyOptions from "../data/currencyList";
 
 function AlertSetup() {
   const navigate = useNavigate();
@@ -12,8 +12,8 @@ function AlertSetup() {
   const [fromCurrency, setFromCurrency] = useState(null);
   const [toCurrency, setToCurrency] = useState(null);
   const [isAgreed, setIsAgreed] = useState(false);
-  const [fromMenuOpen, setFromMenuOpen] = useState(false); // Track dropdown state
-  const [toMenuOpen, setToMenuOpen] = useState(false); // Track dropdown state
+  const [fromMenuOpen, setFromMenuOpen] = useState(false);
+  const [toMenuOpen, setToMenuOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-const currencyOptions = [
+const currencyLists = [
     { code: "AED", name: "United Arab Emirates Dirham", countryCode: "AE", flag: "🇦🇪" },
     { code: "AFN", name: "Afghan Afghani", countryCode: "AF", flag: "🇦🇫" },
     { code: "ALL", name: "Albanian Lek", countryCode: "AL", flag: "🇦🇱" },

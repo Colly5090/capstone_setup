@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import useCurrencyStore, { useCurrencyRates } from "../stores/useCurrencyStore";
-import currencyOptions from "../data/currencyOptions";
+import useCurrencyStore, { useCurrencyRates } from "../stores/useMultiConvertStore";
+import currencyOptions from "../data/currencyList";
 import ReactSelect from "react-select";
 
 const MultiConvert = () => {
@@ -22,7 +22,6 @@ const MultiConvert = () => {
   const [tempFromCurrency, setTempFromCurrency] = useState("");  // Temporary currency state
 
   const results = useCurrencyRates();
-  console.log("Results from useCurrencyRates:", results);
 
   const currencySelectOptions = currencyOptions.map((currency) => ({
     value: currency.code,
@@ -50,7 +49,6 @@ const MultiConvert = () => {
     // Extract rates in order corresponding to `toCurrencies`
     const rates = toCurrencies.map((currency, index) => {
       const rate = results[index]?.rate || null;
-      console.log(`Extracted rate for ${currency}:`, rate);
       return rate;
     });
 

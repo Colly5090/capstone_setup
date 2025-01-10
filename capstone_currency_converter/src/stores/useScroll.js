@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 const useScroll = create((set) => ({
-  refs: {}, // To store references to components
+  refs: {},
   setRef: (key, ref) =>
     set((state) => ({
       refs: { ...state.refs, [key]: ref },
