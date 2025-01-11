@@ -19,3 +19,7 @@ Add additional features like swap currencies
 	Day 5-6
 Style application with Tailwind
 Testing of application.
+
+## Demo
+[Watch the Demo Video](https://www.loom.com/share/03fc4154fe314ddba2548299efe48130?sid=6ba2b0f1-fa30-49bc-a9e4-f53c6fa3cb50)
+
