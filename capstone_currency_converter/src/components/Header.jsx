@@ -44,11 +44,11 @@ function Header() {
           <div className="flex flex-col items-center">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
+              className="p-2 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-violet-300 transition-colors duration-300"
               aria-label="Toggle Theme"
             >
               {theme === "light" ? (
-                <FaMoon className="text-yellow-500 hover:bg-violet-300 transition-colors duration-300" />
+                <FaMoon className="text-yellow-500" />
               ) : (
                 <FaSun className="text-yellow-500" />
               )}
@@ -61,11 +61,11 @@ function Header() {
           <div className="flex flex-col items-center relative">
             <button
               onClick={handleAlertClick}
-              className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
+              className="p-2 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-violet-300 transition-colors duration-300"
               aria-label="Set Alert"
             >
               <FaBell
-                className={`text-black dark:text-white hover:bg-violet-300 transition-colors duration-300 ${
+                className={`text-black dark:text-white ${
                   alertCount > 0 ? "text-red-500" : ""
                 }`}
               />
@@ -84,7 +84,7 @@ function Header() {
               className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
               aria-label="Multi Convert"
             >
-              <FaExchangeAlt className="text-black dark:text-white hover:bg-violet-300 transition-colors duration-300" />
+              <FaExchangeAlt className="text-black dark:text-white" />
             </button>
             <span className="text-sm text-black dark:text-white">
               Multi Convert
@@ -144,7 +144,7 @@ function Header() {
             <div className="flex flex-col items-center">
               <button
                 onClick={() => scrollTo("multi")}
-                className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
+                className="p-2 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-violet-300 transition-colors duration-300"
                 aria-label="Multi Convert"
               >
                 <FaExchangeAlt className="text-black dark:text-white" />
