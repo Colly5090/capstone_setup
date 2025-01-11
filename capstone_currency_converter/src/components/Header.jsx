@@ -48,7 +48,7 @@ function Header() {
               aria-label="Toggle Theme"
             >
               {theme === "light" ? (
-                <FaMoon className="text-yellow-500" />
+                <FaMoon className="text-yellow-500 hover:bg-violet-300 transition-colors duration-300" />
               ) : (
                 <FaSun className="text-yellow-500" />
               )}
@@ -65,7 +65,7 @@ function Header() {
               aria-label="Set Alert"
             >
               <FaBell
-                className={`text-black dark:text-white ${
+                className={`text-black dark:text-white hover:bg-violet-300 transition-colors duration-300 ${
                   alertCount > 0 ? "text-red-500" : ""
                 }`}
               />
@@ -84,7 +84,7 @@ function Header() {
               className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
               aria-label="Multi Convert"
             >
-              <FaExchangeAlt className="text-black dark:text-white" />
+              <FaExchangeAlt className="text-black dark:text-white hover:bg-violet-300 transition-colors duration-300" />
             </button>
             <span className="text-sm text-black dark:text-white">
               Multi Convert
