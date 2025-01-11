@@ -178,7 +178,7 @@ const Footer = () => {
         </a>
         {/* GitHub Icon */}
         <a
-          href="https://github.com"
+          href="https://github.com/Colly5090/capstone_setup"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-gray-500"
