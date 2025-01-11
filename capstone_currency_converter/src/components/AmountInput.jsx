@@ -13,10 +13,10 @@ const AmountInput = () => {
       return;
     }
 
-    if (value === '') {
-      setAmount('')
+    if (value === "") {
+      setAmount("");
     } else if (numericValue >= 0) {
-      setAmount(numericValue)
+      setAmount(numericValue);
     }
   };
 
@@ -24,13 +24,15 @@ const AmountInput = () => {
   return (
     <div>
       <div>
-        <label className="block text-sm font-medium text-gray-700">Amount</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Amount
+        </label>
         <input
           type="number"
           value={amount || ""}
           onChange={(e) => handleChange(e.target.value)}
-          min='0'
-          step='0.01'
+          min="0"
+          step="0.01"
           aria-label="Amount"
           placeholder="Enter Amount"
           className="mt-1 p-2 border rounded-md w-full"

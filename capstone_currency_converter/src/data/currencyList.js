@@ -159,4 +159,4 @@ const currencyLists = [
     { code: "ZWL", name: "Zimbabwean Dollar", countryCode: "ZW", flag: "🇿🇼" },
 ]
 
-export default currencyOptions;  
+export default currencyLists;  

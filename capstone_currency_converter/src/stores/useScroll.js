@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const useScroll = create((set) => ({
   refs: {},
@@ -10,7 +10,7 @@ const useScroll = create((set) => ({
     set((state) => {
       const ref = state.refs[key];
       if (ref?.current) {
-        ref.current.scrollIntoView({ behavior: 'smooth' });
+        ref.current.scrollIntoView({ behavior: "smooth" });
       }
       return state;
     });

@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
-import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram, FaGithub } from 'react-icons/fa';
+import React, { useState } from "react";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+  FaGithub,
+} from "react-icons/fa";
 
 const Footer = () => {
   const [resourcesOpen, setResourcesOpen] = useState(false);
@@ -13,7 +19,9 @@ const Footer = () => {
       {/* Header and Paragraph */}
       <div className="text-center">
         <h2 className="text-2xl font-semibold">CONVERT ON THE GO</h2>
-        <p className="mt-2 text-gray-300">Download the Capstone Currency Converter app </p>
+        <p className="mt-2 text-gray-300">
+          Download the Capstone Currency Converter app{" "}
+        </p>
       </div>
 
       {/* App Store and Play Store Links */}
@@ -45,7 +53,7 @@ const Footer = () => {
             className="cursor-pointer text-lg flex items-center justify-between border-b border-gray-700 py-2"
           >
             <span>RESOURCES</span>
-            <span>{resourcesOpen ? 'x' : '+'}</span>
+            <span>{resourcesOpen ? "x" : "+"}</span>
           </div>
           {resourcesOpen && (
             <ul className="mt-2 pl-4 space-y-2">
@@ -80,7 +88,7 @@ const Footer = () => {
             className="cursor-pointer text-lg flex items-center justify-between border-b border-gray-700 py-2"
           >
             <span>CAPSTONE PROJECT</span>
-            <span>{capstoneOpen ? 'x' : '+'}</span>
+            <span>{capstoneOpen ? "x" : "+"}</span>
           </div>
           {capstoneOpen && (
             <ul className="mt-2 pl-4 space-y-2">
@@ -115,7 +123,7 @@ const Footer = () => {
             className="cursor-pointer text-lg flex items-center justify-between border-b border-gray-700 py-2"
           >
             <span>CURRENCY CONVERTER</span>
-            <span>{currencyOpen ? 'x' : '+'}</span>
+            <span>{currencyOpen ? "x" : "+"}</span>
           </div>
           {currencyOpen && (
             <ul className="mt-2 pl-4 space-y-2">
@@ -181,7 +189,8 @@ const Footer = () => {
 
       {/* Copyright */}
       <div className="mt-10 text-gray-500 text-sm text-center">
-        &copy; 2024-{currentYear} Capstone Currency Converter. All rights reserved.
+        &copy; 2024-{currentYear} Capstone Currency Converter. All rights
+        reserved.
       </div>
     </footer>
   );

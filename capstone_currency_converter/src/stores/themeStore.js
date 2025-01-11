@@ -1,10 +1,10 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const useThemeStore = create((set) => ({
-  theme: 'light',
+  theme: "light",
   toggleTheme: () =>
     set((state) => ({
-      theme: state.theme === 'light' ? 'dark' : 'light',
+      theme: state.theme === "light" ? "dark" : "light",
     })),
 }));
 

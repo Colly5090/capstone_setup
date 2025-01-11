@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
-import useThemeStore from '../stores/themeStore';
-import { FaSun, FaMoon, FaBell, FaExchangeAlt, FaBars, FaTimes } from 'react-icons/fa';
-import useAlertStore from '../stores/useAlertStore';
-import useScroll from '../stores/useScroll';
+import React, { useState } from "react";
+import useThemeStore from "../stores/themeStore";
+import {
+  FaSun,
+  FaMoon,
+  FaBell,
+  FaExchangeAlt,
+  FaBars,
+  FaTimes,
+} from "react-icons/fa";
+import useAlertStore from "../stores/useAlertStore";
+import useScroll from "../stores/useScroll";
 
 function Header() {
   const { theme, toggleTheme } = useThemeStore();
@@ -16,7 +23,7 @@ function Header() {
       setShowPopup(true);
     } else {
       setShowPopup(false);
-      scrollTo('bell'); // Scroll to component A when the bell is clicked
+      scrollTo("bell"); // Scroll to component A when the bell is clicked
     }
     resetAlertCount();
   };
@@ -27,7 +34,9 @@ function Header() {
 
   return (
     <header className="p-6 flex justify-between items-center bg-gray-100 dark:bg-gray-800 relative">
-      <h1 className="text-lg font-bold text-black dark:text-white">Capstone Currency Converter</h1>
+      <h1 className="text-lg font-bold text-black dark:text-white">
+        Capstone Currency Converter
+      </h1>
 
       <div className="hidden md:flex space-x-8 ml-auto">
         {/* Header icons */}
@@ -38,9 +47,15 @@ function Header() {
               className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
               aria-label="Toggle Theme"
             >
-              {theme === 'light' ? <FaMoon className="text-yellow-500" /> : <FaSun className="text-yellow-500" />}
+              {theme === "light" ? (
+                <FaMoon className="text-yellow-500" />
+              ) : (
+                <FaSun className="text-yellow-500" />
+              )}
             </button>
-            <span className="text-sm text-black dark:text-white">Dark Mode</span>
+            <span className="text-sm text-black dark:text-white">
+              Dark Mode
+            </span>
           </div>
 
           <div className="flex flex-col items-center relative">
@@ -49,9 +64,15 @@ function Header() {
               className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
               aria-label="Set Alert"
             >
-              <FaBell className={`text-black dark:text-white ${alertCount > 0 ? 'text-red-500' : ''}`} />
+              <FaBell
+                className={`text-black dark:text-white ${
+                  alertCount > 0 ? "text-red-500" : ""
+                }`}
+              />
               {alertCount > 0 && (
-                <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full px-1">{alertCount}</span>
+                <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full px-1">
+                  {alertCount}
+                </span>
               )}
             </button>
             <span className="text-sm text-black dark:text-white">Alerts</span>
@@ -59,13 +80,15 @@ function Header() {
 
           <div className="flex flex-col items-center">
             <button
-              onClick={() => scrollTo('multi')} // Scroll to component B when multi is clicked
+              onClick={() => scrollTo("multi")} // Scroll to component B when multi is clicked
               className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
               aria-label="Multi Convert"
             >
               <FaExchangeAlt className="text-black dark:text-white" />
             </button>
-            <span className="text-sm text-black dark:text-white">Multi Convert</span>
+            <span className="text-sm text-black dark:text-white">
+              Multi Convert
+            </span>
           </div>
         </div>
       </div>
@@ -89,7 +112,11 @@ function Header() {
                 className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
                 aria-label="Toggle Theme"
               >
-                {theme === 'light' ? <FaMoon className="text-yellow-500" /> : <FaSun className="text-yellow-500" />}
+                {theme === "light" ? (
+                  <FaMoon className="text-yellow-500" />
+                ) : (
+                  <FaSun className="text-yellow-500" />
+                )}
               </button>
               <span className="text-sm text-white">Dark Mode</span>
             </div>
@@ -100,9 +127,15 @@ function Header() {
                 className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
                 aria-label="Set Alert"
               >
-                <FaBell className={`text-black dark:text-white ${alertCount > 0 ? 'text-red-500' : ''}`} />
+                <FaBell
+                  className={`text-black dark:text-white ${
+                    alertCount > 0 ? "text-red-500" : ""
+                  }`}
+                />
                 {alertCount > 0 && (
-                  <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full px-1">{alertCount}</span>
+                  <span className="absolute top-0 right-0 text-xs bg-red-500 text-white rounded-full px-1">
+                    {alertCount}
+                  </span>
                 )}
               </button>
               <span className="text-sm text-white">Alerts</span>
@@ -110,7 +143,7 @@ function Header() {
 
             <div className="flex flex-col items-center">
               <button
-                onClick={() => scrollTo('multi')}
+                onClick={() => scrollTo("multi")}
                 className="p-2 rounded-full bg-gray-300 dark:bg-gray-700"
                 aria-label="Multi Convert"
               >

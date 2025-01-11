@@ -7,15 +7,16 @@ import useApiStore, { useFetchExchangeRate } from "../stores/apiStore";
 import SetAlert from "./SetAlert";
 import useScroll from "../stores/useScroll";
 import MultiConvert from "./MultiConvert";
-import currencyList from "../data/currencyList";
+import currencyLists from "../data/currencyList";
 import Rating from "./Rating";
 import popularCurrencies from "../data/popularCurrencies";
 
 const CurrencySelection = () => {
-  const { fromCurrency, toCurrency, setFromCurrency, setToCurrency } = useApiStore();
+  const { fromCurrency, toCurrency, setFromCurrency, setToCurrency } =
+    useApiStore();
   const { data: exchangeRate, isLoading, error } = useFetchExchangeRate();
 
- // Local state for managing favorites, recent selections, and conversions
+  // Local state for managing favorites, recent selections, and conversions
   const [favorites, setFavorites] = useState([]);
   const [recents, setRecents] = useState([]);
   const [conversions, setConversions] = useState([]);
@@ -40,9 +41,9 @@ const CurrencySelection = () => {
     if (storedFavorites) {
       setFavorites(storedFavorites);
     }
-  }, []);  
-  
-   // Load recent selections from session storage
+  }, []);
+
+  // Load recent selections from session storage
   useEffect(() => {
     const storedRecents = JSON.parse(sessionStorage.getItem("recents"));
     if (storedRecents) {
@@ -52,26 +53,30 @@ const CurrencySelection = () => {
 
   // Fetch exchange rate if required or error states
   useEffect(() => {
-  if (fromCurrency && toCurrency) {
-    if (!exchangeRate || !exchangeRate[fromCurrency] || !exchangeRate[toCurrency]) {
-      if (isLoading) {
-        //Loading while fetching the exchangerate
-      } else if (error) {
-        //If not an error occurs
+    if (fromCurrency && toCurrency) {
+      if (
+        !exchangeRate ||
+        !exchangeRate[fromCurrency] ||
+        !exchangeRate[toCurrency]
+      ) {
+        if (isLoading) {
+          //Loading while fetching the exchangerate
+        } else if (error) {
+          //If not an error occurs
+        }
       }
     }
-  }
-}, [fromCurrency, toCurrency, exchangeRate, isLoading, error]);
+  }, [fromCurrency, toCurrency, exchangeRate, isLoading, error]);
 
- // Calculate conversions when the exchange rate changes
- useEffect(() => {
-  if (exchangeRate) {
-    calculateConversions(exchangeRate);
-  }
-}, [exchangeRate]);
+  // Calculate conversions when the exchange rate changes
+  useEffect(() => {
+    if (exchangeRate) {
+      calculateConversions(exchangeRate);
+    }
+  }, [exchangeRate]);
 
   // Map currency data to a format usable by react-select
-  const allCurrencies = currencyList.map((currency) => ({
+  const allCurrencies = currencyLists.map((currency) => ({
     value: currency.code,
     label: (
       <div className="flex items-center justify-between">
@@ -82,7 +87,8 @@ const CurrencySelection = () => {
         <FaStar
           className={`ml-4 cursor-pointer ${
             favorites.includes(currency.code)
-              ? "text-yellow-400" : "text-gray-400"
+              ? "text-yellow-400"
+              : "text-gray-400"
           }`}
           onClick={(e) => toggleFavorite(currency.code, e)}
         />
@@ -143,7 +149,9 @@ const CurrencySelection = () => {
     //Add All currencies section
     groupedOptions.push({
       label: "All",
-      options: allCurrencies.filter((option) => option.value !== excludeCurrency),
+      options: allCurrencies.filter(
+        (option) => option.value !== excludeCurrency
+      ),
     });
 
     return groupedOptions;
@@ -154,7 +162,8 @@ const CurrencySelection = () => {
     e.stopPropagation();
     setFavorites((prev) => {
       const updatedFavorites = prev.includes(code)
-        ? prev.filter((fav) => fav !== code) : [...prev, code];
+        ? prev.filter((fav) => fav !== code)
+        : [...prev, code];
       localStorage.setItem("favorites", JSON.stringify(updatedFavorites)); // Save to localStorage
       return updatedFavorites;
     });
@@ -166,9 +175,19 @@ const CurrencySelection = () => {
 
     if (type === "from") {
       setFromCurrency(selectedCurrency);
+
+      // If "x" is clicked, clear fromCurrency from sessionStorage
+      if (!selectedCurrency) {
+        sessionStorage.removeItem("fromCurrency");
+      }
     }
     if (type === "to") {
       setToCurrency(selectedCurrency);
+
+      // If "x" is clicked, clear toCurrency from sessionStorage
+      if (!selectedCurrency) {
+        sessionStorage.removeItem("toCurrency");
+      }
     }
 
     if (selectedCurrency && !recents.includes(selectedCurrency)) {
@@ -178,8 +197,13 @@ const CurrencySelection = () => {
     }
 
     // Trigger exchange rate fetching only when a currency is selected
-    if (selectedCurrency && !exchangeRate?.[fromCurrency]?.[toCurrency]) {
-      // Fetch exchange rate (this happens in the useEffect)
+    if (
+      (fromCurrency && toCurrency && type === "from" && selectedCurrency) ||
+      (type === "to" && selectedCurrency)
+    ) {
+      if (!exchangeRate?.[fromCurrency]?.[toCurrency]) {
+        // Fetch exchange rate logic (this happens in the useEffect)
+      }
     }
   };
 
@@ -228,12 +252,11 @@ const CurrencySelection = () => {
     }
   };
 
-   // Render the component and other components
+  // Render the component and other components
   return (
     <div className="space-y-8">
       {/* Currency, Amount, Swap, and Converted Amount Container */}
       <div className="flex flex-col md:flex-col gap-4 items-stretch p-4 sm:w-full">
-
         {/* DropDown for From Currency */}
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -247,7 +270,8 @@ const CurrencySelection = () => {
             components={{ Placeholder: CustomPlaceholder }}
             value={
               fromCurrency
-                ? allCurrencies.find((option) => option.value === fromCurrency) : null
+                ? allCurrencies.find((option) => option.value === fromCurrency)
+                : null
             }
             isClearable
           />
@@ -265,7 +289,10 @@ const CurrencySelection = () => {
             onClick={handleSwap}
             className="bg-green-300 p-4 rounded-full hover:bg-pink-300 mb-2 mt-5 sm:bg-gray-200"
           >
-            <span className="font-semibold md:font-semibold text-sm md:text-xl md:text-green-500 text-black">Swap</span> ↔️
+            <span className="font-semibold md:font-semibold text-sm md:text-xl md:text-green-500 text-black">
+              Swap
+            </span>{" "}
+            ↔️
           </button>
 
           {/* Display Current Exchange Rate with datetime */}
@@ -307,19 +334,19 @@ const CurrencySelection = () => {
           <ConversionResult />
         </div>
       </div>
+
       {/* Horizontal Line */}
       <div className="border-t border-black w-full mb-10"></div>
 
       {/* Display conversion results for specific values */}
       {fromCurrency && toCurrency && exchangeRate > 0 && (
         <div className="flex flex-col md:flex-row justify-center items-center gap-10 p-2">
-
           {/* Card 1: Conversion of fromCurrency to toCurrency */}
           <div className="bg-gray-400 shadow-md rounded-lg w-96 min-h-[20rem] p-6 py-6 md:bg-green-200">
             <h3 className="text-sm md:text-lg font-medium md:font-semibold mb-4 text-center">
               Conversion of{" "}
-              {currencyList.find((opt) => opt.code === fromCurrency)?.name}{" "}
-              to {currencyList.find((opt) => opt.code === toCurrency)?.name}
+              {currencyLists.find((opt) => opt.code === fromCurrency)?.name} to{" "}
+              {currencyLists.find((opt) => opt.code === toCurrency)?.name}
             </h3>
             <ul className="space-y-2">
               {conversions.map(({ number, converted }) => (
@@ -342,8 +369,8 @@ const CurrencySelection = () => {
           <div className="bg-gray-400 shadow-md rounded-lg w-96 min-h-[20rem] p-6 py-6 md:bg-green-200">
             <h3 className="text-sm md:text-lg font-medium md:font-semibold mb-4 text-center">
               Conversion of{" "}
-              {currencyList.find((opt) => opt.code === toCurrency)?.name} to{" "}
-              {currencyList.find((opt) => opt.code === fromCurrency)?.name}
+              {currencyLists.find((opt) => opt.code === toCurrency)?.name} to{" "}
+              {currencyLists.find((opt) => opt.code === fromCurrency)?.name}
             </h3>
             <ul className="space-y-2">
               {specificAmounts.map((value) => {
@@ -375,8 +402,8 @@ const CurrencySelection = () => {
         </div>
       </div>
 
-        {/* Horizontal Line */}
-        <div className="border-t border-black w-full mb-10"></div>
+      {/* Horizontal Line */}
+      <div className="border-t border-black w-full mb-10"></div>
 
       {/*MultiCurrency Rendering */}
       <div className="pt-20 pb-10 px-6">

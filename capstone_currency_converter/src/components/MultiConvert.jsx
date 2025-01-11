@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import useCurrencyStore, { useCurrencyRates } from "../stores/useMultiConvertStore";
+import useCurrencyStore, {
+  useCurrencyRates,
+} from "../stores/useMultiConvertStore";
 import currencyOptions from "../data/currencyList";
 import ReactSelect from "react-select";
 
@@ -19,7 +21,7 @@ const MultiConvert = () => {
   const [activeSelect, setActiveSelect] = useState(null);
   const [displayAmount, setDisplayAmount] = useState(null);
   const [conversionResults, setConversionResults] = useState(null);
-  const [tempFromCurrency, setTempFromCurrency] = useState("");  // Temporary currency state
+  const [tempFromCurrency, setTempFromCurrency] = useState(""); // Temporary currency state
 
   const results = useCurrencyRates();
 
@@ -27,6 +29,14 @@ const MultiConvert = () => {
     value: currency.code,
     label: `${currency.flag} ${currency.countryCode} - ${currency.name}`,
   }));
+
+  // Extra checks to ensure no negative value is entered
+  const handleCheck = (e) => {
+    const newAmount = Number(e.target.value);
+    if (newAmount >= 0 || e.target.value === "") {
+      setAmount(newAmount);
+    }
+  };
 
   const handleMultiConvert = () => {
     if (!fromCurrency) {
@@ -182,7 +192,7 @@ const MultiConvert = () => {
           type="number"
           className="border rounded px-3 py-2 w-full"
           value={amount || ""}
-          onChange={(e) => setAmount(Number(e.target.value))}
+          onChange={handleCheck}
         />
       </div>
 
@@ -200,7 +210,8 @@ const MultiConvert = () => {
       {conversionResults && (
         <div className="mt-6">
           <h2 className="text-lg md:font-semibold font-bold mb-4 text-center text-red-600">
-          {displayAmount} {tempFromCurrency ? tempFromCurrency : ""} is equivalent to
+            {displayAmount} {tempFromCurrency ? tempFromCurrency : ""} is
+            equivalent to
           </h2>
           <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {conversionResults.map(({ currency, convertedAmount }) => (

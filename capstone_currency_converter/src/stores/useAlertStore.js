@@ -1,26 +1,28 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 const useAlertStore = create((set, get) => ({
   alertSettings: {
-    fromCurrency: '',
-    toCurrency: '',
+    fromCurrency: "",
+    toCurrency: "",
     isAgreed: false,
   },
   alertCount: 0,
   exchangeRate: null,
-  previousRate: null, 
-  currentRate: null, 
-  alertMessage: '',
+  previousRate: null,
+  currentRate: null,
+  alertMessage: "",
 
-  setAlertSettings: (fromCurrency, toCurrency, isAgreed) => set({
-    alertSettings: { fromCurrency, toCurrency, isAgreed },
-    alertCount: 0,
-    currentRate: null,
-    previousRate: null,
-    alertMessage: '',
-  }),
+  setAlertSettings: (fromCurrency, toCurrency, isAgreed) =>
+    set({
+      alertSettings: { fromCurrency, toCurrency, isAgreed },
+      alertCount: 0,
+      currentRate: null,
+      previousRate: null,
+      alertMessage: "",
+    }),
 
-  incrementAlertCount: () => set((state) => ({ alertCount: state.alertCount + 1 })),
+  incrementAlertCount: () =>
+    set((state) => ({ alertCount: state.alertCount + 1 })),
   resetAlertCount: () => set({ alertCount: 0 }),
 
   fetchExchangeRate: async () => {
@@ -35,7 +37,7 @@ const useAlertStore = create((set, get) => ({
       const response = await fetch(apiUrl);
       const data = await response.json();
 
-      if (data.result === 'success') {
+      if (data.result === "success") {
         const fetchedRate = data.conversion_rate;
 
         if (currentRate === null) {
@@ -60,7 +62,7 @@ const useAlertStore = create((set, get) => ({
   startRatePolling: () => {
     setInterval(() => {
       get().fetchExchangeRate();
-    }, 60000);
+    }, 3 * 60 * 60 * 1000); //Refetch and compare exchangeRate after every 3 hours
   },
 }));
 
